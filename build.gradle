@@ -1,0 +1,84 @@
+buildscript {
+  ext {
+    // global versions
+    // springBootVersion   = '2.1.4.RELEASE'
+    // springCloudVersion  = 'Greenwich.SR1'
+    quarkusVersion = '0.12.0'
+    // gradle plugins versions
+    // dependencyManagementPluginVersion = '1.0.7.RELEASE'
+  } 
+
+  repositories {
+    jcenter()
+    mavenLocal()
+  }
+  dependencies {
+    classpath "io.quarkus:quarkus-gradle-plugin:${quarkusVersion}"
+  }
+}
+
+plugins {
+	// id 'org.springframework.boot' version '2.1.4.RELEASE'
+	id 'java'
+  id 'io.quarkus.gradle.plugin' version '0.12.0'
+}
+
+// apply plugin: 'io.spring.dependency-management'
+
+
+group = 'de.demo'
+version = '0.1.0.SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+	jcenter()
+  // this is temporary, all dependencies should be in central soon
+  maven {
+      url = 'http://repository.jboss.org/nexus/content/groups/public'
+  }
+}
+
+// dependencyManagement {
+//     imports {
+//         mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+//     }
+// }
+
+dependencies {
+	// implementation 'org.springframework.boot:spring-boot-starter'
+  // implementation "org.springframework:spring-context"
+	implementation "io.quarkus:quarkus-resteasy:${quarkusVersion}"
+	// implementation "io.quarkus:quarkus-arc:${quarkusVersion}"
+
+	// testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testCompile "io.quarkus:quarkus-junit5:${quarkusVersion}"
+	testCompile "io.rest-assured:rest-assured:3.3.0"
+}
+
+test {
+  useJUnitPlatform()
+  ignoreFailures = false
+  reports.html.enabled = false
+
+  testLogging {
+    // Make sure test results are shown in Gradle output.
+    events "passed", "skipped", "failed" //, "standardOut", "standardError"
+    // Make sure output from standard out or error is shown in Gradle output.
+    showStandardStreams = false
+    exceptionFormat = 'full'
+  }
+}
+
+compileJava.dependsOn(processResources)
+
+compileJava {
+    // options.compilerArgs += ["--add-modules", "java.xml.bind"]
+    println "Gradle version: " + project.getGradle().getGradleVersion()
+    println "Groovy version: " + GroovySystem.getVersion()
+    println "javac  version: " + org.gradle.internal.jvm.Jvm.current() + ' with compiler args: ' + options.compilerArgs
+    
+}
+
+// springBoot {
+// 	mainClassName = 'de.demo.minimal_quarkus.MinimalQuarkusApplication'
+// }
